@@ -13,14 +13,14 @@ import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPlayload, Tokens } from '../types';
 import * as bcrypt from 'bcrypt';
-import { RedisServices } from '../redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly redisService: RedisServices,
+    private readonly redisService: RedisService,
   ) {}
 
   async getTokens(userId: number, email: string): Promise<Tokens> {
@@ -83,7 +83,6 @@ export class UsersService {
       },
     );
 
-   
     await this.redisService.setToken(newUser.id, token);
     return token;
   }
@@ -116,6 +115,7 @@ export class UsersService {
 
     if (!updatedUser) throw new ForbiddenException('Access Denied');
 
+    await this.redisService.deleteToken(userId);
     return of(true);
   }
 

@@ -3,7 +3,7 @@ import { RedisService } from 'nestjs-redis';
 import { Tokens } from '../types/index';
 
 @Injectable()
-export class RedisServices {
+export class RedisService {
   constructor(private readonly redisService: RedisService) {}
 
   async setToken(userId: number, tokens: Tokens): Promise<void> {
